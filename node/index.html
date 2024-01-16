@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="htmx-config" content='{"globalViewTransitions":"true"}' />
     <script
       src="https://unpkg.com/htmx.org@1.9.10"
       integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
@@ -21,28 +22,25 @@
     <title>My Webpage</title>
   </head>
   <body>
-    <main>
-      <header></header>
-      <section
-        class="px-10 py-24 flex flex-row space-evenly gap-4 items-center justify-center"
+    <nav class="p-8 flex flex-row items-center w-screen">
+      <a
+        hx-get="/home"
+        hx-push-url="true"
+        hx-target="#main"
+        class="block py-2 px-4 hover:bg-gray-600"
       >
-        <div id="poster" class="py-5 px-4 rounded-md outline outline-1">
-          movie poster
-        </div>
-        <div>movie summary and whatnot</div>
-
-        <div>
-          <button
-            hx-get="http://localhost:5275/allo"
-            hx-trigger="click"
-            hx-target="#poster"
-            hx-swap="innerHTML"
-          >
-            Next
-          </button>
-        </div>
-      </section>
-    </main>
+        Home
+      </a>
+      <a
+        hx-get="/edit"
+        hx-push-url="true"
+        hx-target="#main"
+        class="block py-2 px-4 hover:bg-gray-600"
+      >
+        Edit
+      </a>
+    </nav>
+    <main id="main"></main>
     <footer></footer>
   </body>
 </html>

@@ -22,12 +22,14 @@
     <title>My Webpage</title>
   </head>
   <body>
-    <nav class="p-8 flex flex-row items-center w-screen">
+    <nav
+      class="p-8 select-none flex flex-row items-center w-screen fixed top-0 bg-blue-500"
+    >
       <a
         hx-get="/home"
         hx-push-url="true"
         hx-target="#main"
-        class="block py-2 px-4 hover:bg-gray-600"
+        class="block py-2 px-4 hover:"
       >
         Home
       </a>
@@ -35,12 +37,12 @@
         hx-get="/edit"
         hx-push-url="true"
         hx-target="#main"
-        class="block py-2 px-4 hover:bg-gray-600"
+        class="block py-2 px-4 hover:"
       >
         Edit
       </a>
     </nav>
-    <main id="main"></main>
+    <main class="mt-10" id="main"></main>
     <footer></footer>
   </body>
 </html>

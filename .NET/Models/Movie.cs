@@ -6,6 +6,7 @@ public class Rating {
 }
 
 public class Movie {
+        public Guid? Id { get; set; }
         public string Title { get; set; }
         public string Year { get; set; }
         public string Rated { get; set; }
@@ -35,7 +36,7 @@ public class Movie {
 
 public class MovieContext : DbContext
 {
-    public DbSet<Movie> Movie { get; set; }
+    public DbSet<Movie> Movies { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

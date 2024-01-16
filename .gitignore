@@ -1,0 +1,80 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Prettier
+.prettiercache
+
+# .gitignore file for .NET Web API projects
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio cache/options directory
+.vs/
+
+## Visual Studio auto generated files
+Generated\ Files/
+
+## MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+## NUnit
+*.VisualState.xml
+TestResult.xml
+
+## Packages Directory
+packages/
+
+## User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Ignore .NET SDK logs
+*.log
+
+## Ignore the target folder
+**/wwwroot/
+
+## Ignore appsettings
+appsettings*.json
+
+## Ignore Visual Studio code directory
+.vscode/

@@ -18,10 +18,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "OMDB_API_KEY": "3528a045",
-        "SERVER": "sh-labb2webb.database.windows.net",
+        "SQL_SERVER": "sh-labb2webb.database.windows.net",
         "DATABASE": "sh-labb2webb-db",
-        "USER": "Busta",
-        "PASSWORD": "Password1"
+        "DB_USER": "Busta",
+        "DB_PASSWORD": "Password1"
       }
     },
     "IIS Express": {
@@ -29,7 +29,12 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OMDB_API_KEY": "3528a045",
+        "SQL_SERVER": "sh-labb2webb.database.windows.net",
+        "DATABASE": "sh-labb2webb-db",
+        "DB_USER": "Busta",
+        "DB_PASSWORD": "Password1"
       }
     }
   }

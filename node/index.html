@@ -10,6 +10,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/static/styles/global.css" rel="stylesheet" />
     <script>
       tailwind.config = {
         theme: {
@@ -17,16 +18,21 @@
             colors: {},
           },
         },
+        plugins: [
+          function ({ addVariant }) {
+            addVariant('child', '& > *');
+          },
+        ],
       };
     </script>
     <title>My Webpage</title>
   </head>
   <body>
     <nav
-      class="p-8 select-none flex flex-row items-center w-screen fixed top-0 bg-blue-500"
+      class="p-8 z-50 select-none flex flex-row items-center w-screen fixed top-0 bg-blue-500"
     >
       <a
-        hx-get="/home"
+        hx-get="/"
         hx-push-url="true"
         hx-target="#main"
         class="block py-2 px-4 hover:"
@@ -42,7 +48,31 @@
         Edit
       </a>
     </nav>
-    <main class="mt-10" id="main"></main>
+    <main class="mt-10 child:px-16 child:max-w-full" id="main">
+      <section
+        class="px-10 py-24 flex flex-row space-evenly gap-4 items-center justify-center"
+      >
+        <header></header>
+        <div
+          hx-get="http://localhost:5275/api/movies/random"
+          hx-trigger="load"
+          hx-target="#movie-component"
+          hx-swap="innerHTML"
+          id="movie-component"
+        ></div>
+
+        <div>
+          <button
+            hx-get="http://localhost:5275/api/movies/random"
+            hx-trigger="click"
+            hx-target="#movie-component"
+            hx-swap="innerHTML"
+          >
+            Next
+          </button>
+        </div>
+      </section>
+    </main>
     <footer></footer>
   </body>
 </html>

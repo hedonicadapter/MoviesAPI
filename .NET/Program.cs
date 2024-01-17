@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Net.Http;
 using Htmx;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,16 +14,17 @@ builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
 builder.Services.AddRazorPages();
 
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
         builder.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
+
+builder.Services.AddDbContext<MovieContext>();
 
 
 var app = builder.Build();
@@ -40,7 +43,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapGet("/api/movies/findMovieForm", async() => {
+app.MapGet("/api/movies/findMovieForm", async () =>
+{
     var component = @"
     <div class='relative'>
         <form
@@ -80,9 +84,10 @@ app.MapGet("/api/movies/findMovieForm", async() => {
     return Results.Content(component, "text/html");
 });
 
-app.MapGet("/api/movies/findMovie", async (string title, string year) =>{
+app.MapGet("/api/movies/findMovie", async (string title, string year) =>
+{
     using var client = new HttpClient();
-    
+
     try
     {
         var response = await client.GetAsync($"http://www.omdbapi.com/?t={title}&y={year}&apikey={Environment.GetEnvironmentVariable("OMDB_API_KEY")}");
@@ -90,109 +95,113 @@ app.MapGet("/api/movies/findMovie", async (string title, string year) =>{
         if (movie == null) return Results.BadRequest();
 
         string component = $@"
-            <div id='current' class='flex flex-col gap-3 relative'>
-                <div class='flex flex-row justify-between gap-3 items-baseline'>
-                    <h1>{movie.Title}</h1>
-                    <p>{movie.Year}</p>
-                </div>
+            <form hx-swap='innerHTML' hx-post='http://localhost:5275/api/movies' div id='current' class='flex flex-col gap-3 relative'>
                 <div id='poster' class='rounded-md outline outline-1'>
                     <img class='w-full h-full' src='{movie.Poster}'/>
                 </div>
-                <p class='pt-3 pb-5'>{movie.Plot}</p>
 
-                <div class='flex flex-col gap-3'>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Title</p>
-                        <p>{movie.Title}</p>
+                <div class='flex flex-col gap-7 child:flex child:flex-col child:gap-2'>
+                    <div>
+                        <label for='title'>Title</label>
+                        <input class='w-full' type='text' name='title' value='{movie.Title}'/>
                     </div>
 
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Year</p>
-                        <p>{movie.Year}</p>
+                    <div>
+                        <label for='year'>Year</label>
+                        <input class='w-full' type='text' name='year' value='{movie.Year}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Rated</p>
-                        <p>{movie.Rated}</p>
+                    <div>
+                        <label for='rated'>Rated</label>
+                        <input class='w-full' type='text' name='rated' value='{movie.Rated}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Released</p>
-                        <p>{movie.Released}</p>
+                    <div>
+                        <label for='plot'>Plot</label>
+                        <textarea name='plot' class='block w-full'>{movie.Plot}</textarea>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Runtime</p>
-                        <p>{movie.Runtime}</p>
+                    <div>
+                        <label for='runtime'>Runtime</label>
+                        <input class='w-full' type='text' name='runtime' value='{movie.Runtime}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Genre</p>
-                        <p>{movie.Genre}</p>
+                    <div>
+                        <label for='genre'>Genre</label>
+                        <input class='w-full' type='text' name='genre' value='{movie.Genre}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Director</p>
-                        <p>{movie.Director}</p>
+                    <div>
+                        <label for='director'>Director</label>
+                        <input class='w-full' type='text' name='director' value='{movie.Director}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</p>
-                        <p>{movie.Writer}</p>
+                    <div>
+                        <label for='writer'>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</label>
+                        <input class='w-full' type='text' name='writer' value='{movie.Writer}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Actors</p>
-                        <p>{movie.Actors}</p>
+                    <div>
+                        <label for='actors'>Actors</label>
+                        <input class='w-full' type='text' name='actors' value='{movie.Actors}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Plot</p>
-                        <p>{movie.Plot}</p>
+                    <div>
+                        <label for='poster'>Poster</label>
+                        <input class='w-full break-all' type='text' name='poster' value='{movie.Poster}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Poster</p>
-                        <p class='break-all'>{movie.Poster}</p>
+                    <div>
+                        <label for='metascore'>Metascore</label>
+                        <input class='w-full' type='text' name='metascore' value='{movie.Metascore}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Ratings</p>
-                        <p>{movie.Ratings}</p>
+                    <div>
+                        <label>for='rating'>Rating</label>
+                        <input class='w-full' type='text' name='IMDbRating' value='{movie.IMDbRating}'/>
                     </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>Metascore</p>
-                        <p>{movie.Metascore}</p>
-                    </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>IMDb rating</p>
-                        <p>{movie.imdbRating} ({movie.imdbVotes} votes)</p>
-                    </div>
-                    <div class='flex flex-row justify-between gap-3'>
-                        <p>imdbID</p>
-                        <p>{movie.imdbID}</p>
+                    <div>
+                        <label for='IMDbId'>IMDbId</label>
+                        <input class='w-full' type='text' name='IMDbId' value='{movie.IMDbId}'/>
                     </div>
                 </div>
 
                 <div class='sticky w-screen bottom-0 pb-8 gap-3 flex flex-row justify-evenly items-center'>
                     <a hx-target='#current' hx-get='http://localhost:5275/api/movies/findMovieForm' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Go back</a>
-                    <a hx-swap='innerHTML' hx-post='http://localhost:5275/api/movies/' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Add movie</a>
+                    <button type='submit' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Add movie</button>
                 </div>
-            </div>";
+            </form>";
 
         return Results.Content(component, "text/html");
     }
-    catch
+    catch (Exception ex)
     {
-        return Results.BadRequest();
+        return Results.BadRequest(new { message = ex.Message });
     }
 });
 
-// app.MapPost("/api/movies", async (HttpContext httpContext, MovieContext dbContext) =>{
-//     try{
-//         Movie newMovie = (Movie)await httpContext.Request.ReadFormAsync();
+app.MapPost("/api/movies", async (HttpContext httpContext, MovieContext dbContext) =>
+{
+    try
+    {
+        var formData = await httpContext.Request.ReadFormAsync();
+        var newMovie = new Movie();
 
-//         newMovie.Id = Guid.NewGuid();
+        newMovie.Title = formData["title"];
+        newMovie.Year = formData["year"];
+        newMovie.Rated = formData["rated"];
+        newMovie.Plot = formData["plot"];
+        newMovie.Runtime = formData["runtime"];
+        newMovie.Genre = formData["genre"];
+        newMovie.Director = formData["director"];
+        newMovie.Writer = formData["writer"];
+        newMovie.Actors = formData["actors"];
+        newMovie.Poster = formData["poster"];
+        newMovie.Metascore = formData["metascore"];
+        newMovie.IMDbId = formData["IMDbId"];
+        newMovie.Id = Guid.NewGuid();
 
-//         dbContext.Movies.Add(newMovie);
-//         await dbContext.SaveChangesAsync();
-        
-//         return Results.Created($"/api/movies/{newMovie.Id}", newMovie);
-//     } catch {
-//         return Results.BadRequest();
-//     }
-    
-// });
+        dbContext.Movies.Add(newMovie);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Created($"/api/movies/{newMovie.Id}", newMovie);
+        // return Results.Ok();
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { message = ex.Message });
+    }
+});
 
 // app.MapPatch("/api/movies/{id}", async (HttpContext httpContext, MovieContext dbContext, string id) =>{
 // });
@@ -200,12 +209,89 @@ app.MapGet("/api/movies/findMovie", async (string title, string year) =>{
 // app.MapGet("/api/movies/{id}", async (HttpContext httpContext, MovieContext dbContext, string id) =>{
 // });
 
-// app.MapGet("/api/movies/random", async (HttpContext httpContext, MovieContext dbContext) =>{
+app.MapGet("/api/movies/random", async ([FromServices] MovieContext dbContext) =>
+{
+    var randomMovie = await dbContext.Movies.OrderBy(r => Guid.NewGuid()).Take(1).FirstOrDefaultAsync();
+    if (randomMovie == null) return Results.NotFound();
 
-// });
+    var component = $@"
+    <div id='current' class='flex flex-col gap-3 relative'>
+        <div class='flex flex-row justify-between gap-3 items-baseline'>
+            <h1>{randomMovie.Title}</h1>
+            <p>{randomMovie.Year}</p>
+        </div>
+        <div id='poster' class='rounded-md outline outline-1'>
+            <img class='w-full h-full' src='{randomMovie.Poster}'/>
+        </div>
+        <p class='pt-3 pb-5'>{randomMovie.Plot}</p>
+
+        <div class='flex flex-col gap-3'>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Title</p>
+                <p>{randomMovie.Title}</p>
+            </div>
+
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Year</p>
+                <p>{randomMovie.Year}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Rated</p>
+                <p>{randomMovie.Rated}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Runtime</p>
+                <p>{randomMovie.Runtime}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Genre</p>
+                <p>{randomMovie.Genre}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Director</p>
+                <p>{randomMovie.Director}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>{(randomMovie.Writer.Contains(',') ? "Writers" : "Writer")}</p>
+                <p>{randomMovie.Writer}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Actors</p>
+                <p>{randomMovie.Actors}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Plot</p>
+                <p>{randomMovie.Plot}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Poster</p>
+                <p class='break-all'>{randomMovie.Poster}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>Metascore</p>
+                <p>{randomMovie.Metascore}</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>IMDb rating</p>
+                <p>{randomMovie.IMDbRating} ({randomMovie.IMDbVotes} votes)</p>
+            </div>
+            <div class='flex flex-row justify-between gap-3'>
+                <p>IMDb ID</p>
+                <p>{randomMovie.IMDbId}</p>
+            </div>
+        </div>";
+
+    return Results.Content(component, "text/html");
+});
 
 
 
+
+//                 <div class='sticky w-screen bottom-0 pb-8 gap-3 flex flex-row justify-evenly items-center'>
+//                     <a hx-target='#current' hx-get='http://localhost:5275/api/movies/findMovieForm' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Go back</a>
+//                     <a hx-swap='innerHTML' hx-post='http://localhost:5275/api/movies/' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Add movie</a>
+//                 </div>
+//             </div>"
 
 
 app.Run();

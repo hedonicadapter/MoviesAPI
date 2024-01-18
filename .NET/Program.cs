@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Net.Http;
+using System.Reflection;
 using Htmx;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,19 +54,19 @@ app.MapGet("/api/movies/findMovieForm", async () =>
             hx-target='this'
             hx-swap='innerHTML'
         >
-            <input type='hidden' name='id' />
+            <input type='hidden' name='Id' />
             <div class='flex flex-col space-y-4'>
-                <label for='title'>Title</label>
+                <label for='Title'>Title</label>
                 <input
                     type='text'
-                    name='title'
+                    name='Title'
                     id='title'
                     class='border border-gray-400 rounded-md p-2'
                 />
-                <label for='year'>Year</label>
+                <label for='Year'>Year</label>
                 <input
                     type='text'
-                    name='year'
+                    name='Year'
                     id='year'
                     class='border border-gray-400 rounded-md p-2'
                 />
@@ -84,70 +85,84 @@ app.MapGet("/api/movies/findMovieForm", async () =>
     return Results.Content(component, "text/html");
 });
 
-app.MapGet("/api/movies/findMovie", async (string title, string year) =>
+app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title, string? year) =>
 {
-    using var client = new HttpClient();
+    var movie = new Movie();
 
     try
     {
-        var response = await client.GetAsync($"http://www.omdbapi.com/?t={title}&y={year}&apikey={Environment.GetEnvironmentVariable("OMDB_API_KEY")}");
-        var movie = await response.Content.ReadFromJsonAsync<Movie>();
-        if (movie == null) return Results.BadRequest();
+        var res = await dbContext.Movies.Where(m => m.Title == title && m.Year == year).FirstOrDefaultAsync();
+
+        if (res != null)
+        {
+            movie = res;
+        }
+        else
+        {
+            using var client = new HttpClient();
+            string queryParams = $"t={title}";
+            if (year != null) queryParams += $"&y={year}";
+
+            var response = await client.GetAsync($"http://www.omdbapi.com/?{queryParams}&apikey={Environment.GetEnvironmentVariable("OMDB_API_KEY")}");
+            movie = await response.Content.ReadFromJsonAsync<Movie>();
+            if (movie == null) return Results.BadRequest();
+        }
+
 
         string component = $@"
-            <form hx-swap='innerHTML' hx-post='http://localhost:5275/api/movies' div id='current' class='flex flex-col gap-3 relative'>
+            <form hx-swap='innerHTML' hx-put='http://localhost:5275/api/movies' id='current' class='flex flex-col gap-3 relative'>
                 <div id='poster' class='rounded-md outline outline-1'>
                     <img class='w-full h-full' src='{movie.Poster}'/>
                 </div>
 
                 <div class='flex flex-col gap-7 child:flex child:flex-col child:gap-2'>
                     <div>
-                        <label for='title'>Title</label>
-                        <input class='w-full' type='text' name='title' value='{movie.Title}'/>
+                        <label for='Title'>Title</label>
+                        <input class='w-full' type='text' name='Title' value='{movie.Title}'/>
                     </div>
 
                     <div>
-                        <label for='year'>Year</label>
-                        <input class='w-full' type='text' name='year' value='{movie.Year}'/>
+                        <label for='Year'>Year</label>
+                        <input class='w-full' type='text' name='Year' value='{movie.Year}'/>
                     </div>
                     <div>
-                        <label for='rated'>Rated</label>
-                        <input class='w-full' type='text' name='rated' value='{movie.Rated}'/>
+                        <label for='Rated'>Rated</label>
+                        <input class='w-full' type='text' name='Rated' value='{movie.Rated}'/>
                     </div>
                     <div>
-                        <label for='plot'>Plot</label>
-                        <textarea name='plot' class='block w-full'>{movie.Plot}</textarea>
+                        <label for='Plot'>Plot</label>
+                        <textarea name='Plot' class='block w-full'>{movie.Plot}</textarea>
                     </div>
                     <div>
-                        <label for='runtime'>Runtime</label>
-                        <input class='w-full' type='text' name='runtime' value='{movie.Runtime}'/>
+                        <label for='Runtime'>Runtime</label>
+                        <input class='w-full' type='text' name='Runtime' value='{movie.Runtime}'/>
                     </div>
                     <div>
-                        <label for='genre'>Genre</label>
-                        <input class='w-full' type='text' name='genre' value='{movie.Genre}'/>
+                        <label for='Genre'>Genre</label>
+                        <input class='w-full' type='text' name='Genre' value='{movie.Genre}'/>
                     </div>
                     <div>
-                        <label for='director'>Director</label>
-                        <input class='w-full' type='text' name='director' value='{movie.Director}'/>
+                        <label for='Director'>Director</label>
+                        <input class='w-full' type='text' name='Director' value='{movie.Director}'/>
                     </div>
                     <div>
-                        <label for='writer'>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</label>
-                        <input class='w-full' type='text' name='writer' value='{movie.Writer}'/>
+                        <label for='Writer'>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</label>
+                        <input class='w-full' type='text' name='Writer' value='{movie.Writer}'/>
                     </div>
                     <div>
-                        <label for='actors'>Actors</label>
-                        <input class='w-full' type='text' name='actors' value='{movie.Actors}'/>
+                        <label for='Actors'>Actors</label>
+                        <input class='w-full' type='text' name='Actors' value='{movie.Actors}'/>
                     </div>
                     <div>
-                        <label for='poster'>Poster</label>
-                        <input class='w-full break-all' type='text' name='poster' value='{movie.Poster}'/>
+                        <label for='Poster'>Poster</label>
+                        <input class='w-full break-all' type='text' name='Poster' value='{movie.Poster}'/>
                     </div>
                     <div>
-                        <label for='metascore'>Metascore</label>
-                        <input class='w-full' type='text' name='metascore' value='{movie.Metascore}'/>
+                        <label for='Metascore'>Metascore</label>
+                        <input class='w-full' type='text' name='Metascore' value='{movie.Metascore}'/>
                     </div>
                     <div>
-                        <label>for='rating'>Rating</label>
+                        <label for='Rating'>Rating</label>
                         <input class='w-full' type='text' name='IMDbRating' value='{movie.IMDbRating}'/>
                     </div>
                     <div>
@@ -158,9 +173,10 @@ app.MapGet("/api/movies/findMovie", async (string title, string year) =>
 
                 <div class='sticky w-screen bottom-0 pb-8 gap-3 flex flex-row justify-evenly items-center'>
                     <a hx-target='#current' hx-get='http://localhost:5275/api/movies/findMovieForm' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Go back</a>
-                    <button type='submit' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Add movie</button>
+                    <button type='submit' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>{(res != null ? "Save changes" : "Add movie")}</button>
                 </div>
-            </form>";
+            </form>
+            ";
 
         return Results.Content(component, "text/html");
     }
@@ -170,28 +186,46 @@ app.MapGet("/api/movies/findMovie", async (string title, string year) =>
     }
 });
 
-app.MapPost("/api/movies", async (HttpContext httpContext, MovieContext dbContext) =>
+app.MapPut("/api/movies", async (HttpContext httpContext, MovieContext dbContext) =>
 {
     try
     {
         var formData = await httpContext.Request.ReadFormAsync();
         var newMovie = new Movie();
 
-        newMovie.Title = formData["title"];
-        newMovie.Year = formData["year"];
-        newMovie.Rated = formData["rated"];
-        newMovie.Plot = formData["plot"];
-        newMovie.Runtime = formData["runtime"];
-        newMovie.Genre = formData["genre"];
-        newMovie.Director = formData["director"];
-        newMovie.Writer = formData["writer"];
-        newMovie.Actors = formData["actors"];
-        newMovie.Poster = formData["poster"];
-        newMovie.Metascore = formData["metascore"];
+        newMovie.Title = formData["Title"];
+        newMovie.Year = formData["Year"];
+        newMovie.Rated = formData["Rated"];
+        newMovie.Plot = formData["Plot"];
+        newMovie.Runtime = formData["Runtime"];
+        newMovie.Genre = formData["Genre"];
+        newMovie.Director = formData["Director"];
+        newMovie.Writer = formData["Writer"];
+        newMovie.Actors = formData["Actors"];
+        newMovie.Poster = formData["Poster"];
+        newMovie.Metascore = formData["Metascore"];
         newMovie.IMDbId = formData["IMDbId"];
-        newMovie.Id = Guid.NewGuid();
+        newMovie.IMDbRating = formData["IMDbRating"];
 
-        dbContext.Movies.Add(newMovie);
+        var existingRecord = await dbContext.Movies.Where(m => m.Title == newMovie.Title && m.Year == newMovie.Year && m.Director == newMovie.Director).FirstOrDefaultAsync();
+
+        if (existingRecord != null)
+        {
+            foreach (PropertyInfo prop in newMovie.GetType().GetProperties())
+            {
+                if (prop.GetValue(newMovie) == null) continue;
+                prop.SetValue(existingRecord, prop.GetValue(newMovie));
+            }
+
+            dbContext.Update(existingRecord);
+        }
+        else
+        {
+            newMovie.Id = Guid.NewGuid();
+            dbContext.Movies.Add(newMovie);
+        }
+
+
         await dbContext.SaveChangesAsync();
 
         return Results.Created($"/api/movies/{newMovie.Id}", newMovie);
@@ -203,11 +237,15 @@ app.MapPost("/api/movies", async (HttpContext httpContext, MovieContext dbContex
     }
 });
 
-// app.MapPatch("/api/movies/{id}", async (HttpContext httpContext, MovieContext dbContext, string id) =>{
+// app.MapPatch("/api/movies/{id}", async (HttpContext httpContext,, MovieContext dbContext, string id) =>{
 // });
 
-// app.MapGet("/api/movies/{id}", async (HttpContext httpContext, MovieContext dbContext, string id) =>{
+
+
+// app.MapGet("/api/movies/{id}", async (HttpContext httpContext,,MovieContext dbContext, string id) =>{
 // });
+
+
 
 app.MapGet("/api/movies/random", async ([FromServices] MovieContext dbContext) =>
 {

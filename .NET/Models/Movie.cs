@@ -31,6 +31,7 @@ public class MovieContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer($"Server=tcp:{Environment.GetEnvironmentVariable("SQL_SERVER")},1433;Initial Catalog={Environment.GetEnvironmentVariable("DATABASE")};Persist Security Info=False;User ID={Environment.GetEnvironmentVariable("DB_USER")};Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        optionsBuilder.UseSqlServer($"Server=tcp:{Environment.GetEnvironmentVariable("SQL_SERVER")},1433;Initial Catalog={Environment.GetEnvironmentVariable("DATABASE")};Persist Security Info=False;User ID={Environment.GetEnvironmentVariable("DB_USER")};Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+            options => options.EnableRetryOnFailure());
     }
 }

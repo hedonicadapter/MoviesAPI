@@ -47,39 +47,35 @@ app.UseAuthorization();
 app.MapGet("/api/movies/findMovieForm", async () =>
 {
     var component = @"
-    <div class='relative'>
         <form
             hx-get='http://localhost:5275/api/movies/findMovie'
             hx-trigger='submit'
             hx-target='this'
             hx-swap='innerHTML'
         >
-            <input type='hidden' name='Id' />
-            <div class='flex flex-col space-y-4'>
+            <div class='flex flex-col gap-7'>
+                <input type='hidden' name='Id' />
                 <label for='Title'>Title</label>
                 <input
                     type='text'
                     name='Title'
                     id='title'
-                    class='border border-gray-400 rounded-md p-2'
                 />
                 <label for='Year'>Year</label>
                 <input
                     type='text'
                     name='Year'
                     id='year'
-                    class='border border-gray-400 rounded-md p-2'
                 />
 
                 <button
                     type='submit'
-                    class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                    class='button'
                 >
                     Search
                 </button>
             </div>
         </form>
-    </div>
     ";
 
     return Results.Content(component, "text/html");
@@ -108,74 +104,69 @@ app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title,
             if (movie == null) return Results.BadRequest();
         }
 
+        string style = @"<style>
+                @media (min-width: 768px) {
+                    main {
+                        padding-right:0 !important;
+                    }
+                }
+            </style>";
 
         string component = $@"
-            <form hx-swap='innerHTML' hx-put='http://localhost:5275/api/movies' id='current' class='flex flex-col gap-3 relative'>
-                <div id='poster' class='rounded-md outline outline-1'>
-                    <img class='w-full h-full' src='{movie.Poster}'/>
+            <div class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center'>
+                <div class='md:pb-3'>
+                    <img class='rounded-md outline outline-1 md:min-w-[100%]' src='{movie.Poster}'/>
                 </div>
-
-                <div class='flex flex-col gap-7 child:flex child:flex-col child:gap-2'>
-                    <div>
+                <form class='md:h-[calc(100vh-6rem)] md:pr-[14vw] md:overflow-y-auto md:py-12 md:mt-24 md:w-full' hx-swap='innerHTML' hx-put='http://localhost:5275/api/movies' id='current'>
+                    <div class='flex flex-col gap-7 child:flex child:flex-col child:gap-2'>
                         <label for='Title'>Title</label>
-                        <input class='w-full' type='text' name='Title' value='{movie.Title}'/>
-                    </div>
-
-                    <div>
+                        <input type='text' name='Title' value='{movie.Title}'/>
                         <label for='Year'>Year</label>
-                        <input class='w-full' type='text' name='Year' value='{movie.Year}'/>
-                    </div>
-                    <div>
-                        <label for='Rated'>Rated</label>
-                        <input class='w-full' type='text' name='Rated' value='{movie.Rated}'/>
-                    </div>
-                    <div>
-                        <label for='Plot'>Plot</label>
-                        <textarea name='Plot' class='block w-full'>{movie.Plot}</textarea>
-                    </div>
-                    <div>
-                        <label for='Runtime'>Runtime</label>
-                        <input class='w-full' type='text' name='Runtime' value='{movie.Runtime}'/>
-                    </div>
-                    <div>
-                        <label for='Genre'>Genre</label>
-                        <input class='w-full' type='text' name='Genre' value='{movie.Genre}'/>
-                    </div>
-                    <div>
-                        <label for='Director'>Director</label>
-                        <input class='w-full' type='text' name='Director' value='{movie.Director}'/>
-                    </div>
-                    <div>
-                        <label for='Writer'>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</label>
-                        <input class='w-full' type='text' name='Writer' value='{movie.Writer}'/>
-                    </div>
-                    <div>
-                        <label for='Actors'>Actors</label>
-                        <input class='w-full' type='text' name='Actors' value='{movie.Actors}'/>
-                    </div>
-                    <div>
-                        <label for='Poster'>Poster</label>
-                        <input class='w-full break-all' type='text' name='Poster' value='{movie.Poster}'/>
-                    </div>
-                    <div>
-                        <label for='Metascore'>Metascore</label>
-                        <input class='w-full' type='text' name='Metascore' value='{movie.Metascore}'/>
-                    </div>
-                    <div>
-                        <label for='Rating'>Rating</label>
-                        <input class='w-full' type='text' name='IMDbRating' value='{movie.IMDbRating}'/>
-                    </div>
-                    <div>
-                        <label for='IMDbId'>IMDbId</label>
-                        <input class='w-full' type='text' name='IMDbId' value='{movie.IMDbId}'/>
-                    </div>
-                </div>
+                        <input type='text' name='Year' value='{movie.Year}'/>
 
-                <div class='sticky w-screen bottom-0 pb-8 gap-3 flex flex-row justify-evenly items-center'>
-                    <a hx-target='#current' hx-get='http://localhost:5275/api/movies/findMovieForm' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>Go back</a>
-                    <button type='submit' class='rounded-full outline outline-2 px-5 pb-2 pt-1'>{(res != null ? "Save changes" : "Add movie")}</button>
-                </div>
-            </form>
+                        <label for='Rated'>Rated</label>
+                        <input type='text' name='Rated' value='{movie.Rated}'/>
+
+                        <label for='Plot'>Plot</label>
+                        <textarea name='Plot' class=>{movie.Plot}</textarea>
+
+                        <label for='Runtime'>Runtime</label>
+                        <input type='text' name='Runtime' value='{movie.Runtime}'/>
+
+                        <label for='Genre'>Genre</label>
+                        <input type='text' name='Genre' value='{movie.Genre}'/>
+
+                        <label for='Director'>Director</label>
+                        <input type='text' name='Director' value='{movie.Director}'/>
+
+                        <label for='Writer'>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</label>
+                        <input type='text' name='Writer' value='{movie.Writer}'/>
+
+                        <label for='Actors'>Actors</label>
+                        <input type='text' name='Actors' value='{movie.Actors}'/>
+
+                        <label for='Poster'>Poster</label>
+                        <input class='break-all' type='text' name='Poster' value='{movie.Poster}'/>
+
+                        <label for='Metascore'>Metascore</label>
+                        <input type='text' name='Metascore' value='{movie.Metascore}'/>
+
+                        <label for='Rating'>Rating</label>
+                        <input type='text' name='IMDbRating' value='{movie.IMDbRating}'/>
+
+                        <input type='hidden' value='{movie.IMDbVotes}' name='IMDbVotes'/>
+
+                        <label for='IMDbId'>IMDbId</label>
+                        <input type='text' name='IMDbId' value='{movie.IMDbId}'/>
+                    </div>
+
+                    <div class='sticky bottom-0 pb-8 gap-3 flex flex-row justify-end items-center'>
+                        <a hx-target='#current' hx-get='http://localhost:5275/api/movies/findMovieForm' class='button'>Go back</a>
+                        <button type='submit' class='button'>{(res != null ? "Save changes" : "Add movie")}</button>
+                    </div>
+                </form>
+                {style}
+            </div>
             ";
 
         return Results.Content(component, "text/html");
@@ -206,6 +197,7 @@ app.MapPut("/api/movies", async (HttpContext httpContext, MovieContext dbContext
         newMovie.Metascore = formData["Metascore"];
         newMovie.IMDbId = formData["IMDbId"];
         newMovie.IMDbRating = formData["IMDbRating"];
+        newMovie.IMDbVotes = formData["IMDbVotes"];
 
         var existingRecord = await dbContext.Movies.Where(m => m.Title == newMovie.Title && m.Year == newMovie.Year && m.Director == newMovie.Director).FirstOrDefaultAsync();
 
@@ -237,13 +229,33 @@ app.MapPut("/api/movies", async (HttpContext httpContext, MovieContext dbContext
     }
 });
 
-// app.MapPatch("/api/movies/{id}", async (HttpContext httpContext,, MovieContext dbContext, string id) =>{
-// });
+app.MapDelete("/api/movies/{id}", async (MovieContext dbContext, string id) =>
+{
+    try
+    {
+        var movie = await dbContext.Movies.Where(m => m.Id.ToString() == id).FirstOrDefaultAsync();
+        if (movie == null) return Results.NotFound();
+
+        dbContext.Movies.Remove(movie);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { message = ex.Message });
+    }
+});
 
 
 
-// app.MapGet("/api/movies/{id}", async (HttpContext httpContext,,MovieContext dbContext, string id) =>{
-// });
+app.MapGet("/api/movies/{id}", async (MovieContext dbContext, string id) =>
+{
+    var movie = await dbContext.Movies.Where(m => m.Id.ToString() == id).FirstOrDefaultAsync();
+    if (movie == null) return Results.NotFound();
+
+    return Results.Ok(movie);
+});
 
 
 
@@ -252,72 +264,81 @@ app.MapGet("/api/movies/random", async ([FromServices] MovieContext dbContext) =
     var randomMovie = await dbContext.Movies.OrderBy(r => Guid.NewGuid()).Take(1).FirstOrDefaultAsync();
     if (randomMovie == null) return Results.NotFound();
 
+
+    string style = @"<style>
+            @media (min-width: 768px) {
+                main {
+                    padding-right:0 !important;
+                }
+            }
+        </style>";
+
     var component = $@"
-    <div id='current' class='flex flex-col gap-3 relative'>
-        <div class='flex flex-row justify-between gap-3 items-baseline'>
-            <h1>{randomMovie.Title}</h1>
-            <p>{randomMovie.Year}</p>
-        </div>
-        <div id='poster' class='rounded-md outline outline-1'>
-            <img class='w-full h-full' src='{randomMovie.Poster}'/>
-        </div>
-        <p class='pt-3 pb-5'>{randomMovie.Plot}</p>
-
-        <div class='flex flex-col gap-3'>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Title</p>
-                <p>{randomMovie.Title}</p>
-            </div>
-
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Year</p>
+    <div class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center'>
+        <div class='md:pb-3'>
+            <div class='flex flex-row justify-between gap-3 items-baseline'>
+                <h1>{randomMovie.Title}</h1>
                 <p>{randomMovie.Year}</p>
             </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Rated</p>
-                <p>{randomMovie.Rated}</p>
+            <img class='rounded-md outline outline-1 md:min-w-[100%]' src='{randomMovie.Poster}'/>
+        </div>
+
+        <div class='md:h-[calc(100vh-6rem)] md:pr-[14vw] md:overflow-y-auto md:py-12 md:mt-24 md:w-full'>
+            <div id='current' class='flex flex-col gap-3 relative'>
+                <p class='pt-3 pb-5'>{randomMovie.Plot}</p>
+
+                <div class='flex flex-col gap-3 child:flex child:flex-row child:justify-between child:gap-3'>
+                    <div>
+                        <p>Title</p>
+                        <p>{randomMovie.Title}</p>
+                    </div>
+
+                    <div>
+                        <p>Year</p>
+                        <p>{randomMovie.Year}</p>
+                    </div>
+                    <div>
+                        <p>Rated</p>
+                        <p>{randomMovie.Rated}</p>
+                    </div>
+                    <div>
+                        <p>Runtime</p>
+                        <p>{randomMovie.Runtime}</p>
+                    </div>
+                    <div>
+                        <p>Genre</p>
+                        <p>{randomMovie.Genre}</p>
+                    </div>
+                    <div>
+                        <p>Director</p>
+                        <p>{randomMovie.Director}</p>
+                    </div>
+                    <div>
+                        <p>{(randomMovie.Writer.Contains(',') ? "Writers" : "Writer")}</p>
+                        <p>{randomMovie.Writer}</p>
+                    </div>
+                    <div>
+                        <p>Actors</p>
+                        <p>{randomMovie.Actors}</p>
+                    </div>
+                    <div>
+                        <p>Metascore</p>
+                        <p>{randomMovie.Metascore}</p>
+                    </div>
+                    <div>
+                        <p>IMDb rating</p>
+                        <p>{randomMovie.IMDbRating} ({randomMovie.IMDbVotes} votes)</p>
+                    </div>
+                    <div>
+                        <p>IMDb ID</p>
+                        <p>{randomMovie.IMDbId}</p>
+                    </div>
+                </div>
             </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Runtime</p>
-                <p>{randomMovie.Runtime}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Genre</p>
-                <p>{randomMovie.Genre}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Director</p>
-                <p>{randomMovie.Director}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>{(randomMovie.Writer.Contains(',') ? "Writers" : "Writer")}</p>
-                <p>{randomMovie.Writer}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Actors</p>
-                <p>{randomMovie.Actors}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Plot</p>
-                <p>{randomMovie.Plot}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Poster</p>
-                <p class='break-all'>{randomMovie.Poster}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>Metascore</p>
-                <p>{randomMovie.Metascore}</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>IMDb rating</p>
-                <p>{randomMovie.IMDbRating} ({randomMovie.IMDbVotes} votes)</p>
-            </div>
-            <div class='flex flex-row justify-between gap-3'>
-                <p>IMDb ID</p>
-                <p>{randomMovie.IMDbId}</p>
-            </div>
-        </div>";
+        </div>
+        {style}
+    </div>
+    ";
 
     return Results.Content(component, "text/html");
 });

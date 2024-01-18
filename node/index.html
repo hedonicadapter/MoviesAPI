@@ -29,7 +29,7 @@
   </head>
   <body>
     <nav
-      class="p-8 z-50 select-none flex flex-row items-center w-screen fixed top-0 bg-blue-500"
+      class="p-8 z-50 select-none flex flex-row items-center w-screen fixed top-0 bg-white shadow-sm"
     >
       <a
         hx-get="/"
@@ -48,10 +48,11 @@
         Edit
       </a>
     </nav>
-    <main class="mt-10 child:px-16 child:max-w-full" id="main">
-      <section
-        class="px-10 py-24 flex flex-row space-evenly gap-4 items-center justify-center"
-      >
+    <main
+      class="mt-32 md:mt-0 md:max-h-screen pb-16 px-[1.25vw] sm:px-[20vw] md:px-[14vw]"
+      id="main"
+    >
+      <section>
         <header></header>
         <div
           hx-get="http://localhost:5275/api/movies/random"

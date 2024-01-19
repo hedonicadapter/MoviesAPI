@@ -50,21 +50,21 @@ app.MapGet("/api/movies/findMovieForm", async () =>
         <form
             hx-get='http://localhost:5275/api/movies/findMovie'
             hx-trigger='submit'
-            hx-target='this'
+            hx-target='#main-component'
             hx-swap='innerHTML'
         >
             <div class='flex flex-col gap-7'>
-                <input type='hidden' name='Id' />
+                <input type='hidden' title='Id' id='Id' name='Id' />
                 <label for='Title'>Title</label>
                 <input
                     type='text'
-                    name='Title'
+                    title='Title' id='Title' name='Title'
                     id='title'
                 />
                 <label for='Year'>Year</label>
                 <input
                     type='text'
-                    name='Year'
+                    title='Year' id='Year' name='Year'
                     id='year'
                 />
 
@@ -117,51 +117,52 @@ app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title,
                 <div class='md:pb-3'>
                     <img class='rounded-md outline outline-1 md:min-w-[100%]' src='{movie.Poster}'/>
                 </div>
-                <form class='md:h-[calc(100vh-6rem)] md:pr-[14vw] md:overflow-y-auto md:py-12 md:mt-24 md:w-full' hx-swap='innerHTML' hx-put='http://localhost:5275/api/movies' id='current'>
+                <form class='md:h-[calc(100vh-6rem)] md:pr-[14vw] md:overflow-y-auto md:py-12 md:mt-24 md:w-full' hx-swap='innerHTML' hx-target='#main-component' hx-put='http://localhost:5275/api/movies'>
                     <div class='flex flex-col gap-7 child:flex child:flex-col child:gap-2'>
                         <label for='Title'>Title</label>
-                        <input type='text' name='Title' value='{movie.Title}'/>
+                        <input type='text' title='Title' id='Title' name='Title' value='{movie.Title}'/>
+                        
                         <label for='Year'>Year</label>
-                        <input type='text' name='Year' value='{movie.Year}'/>
+                        <input type='text' title='Year' id='Year' name='Year' value='{movie.Year}'/>
 
                         <label for='Rated'>Rated</label>
-                        <input type='text' name='Rated' value='{movie.Rated}'/>
+                        <input type='text' title='Rated' id='Rated' name='Rated' value='{movie.Rated}'/>
 
                         <label for='Plot'>Plot</label>
-                        <textarea name='Plot' class=>{movie.Plot}</textarea>
+                        <textarea title='Plot' id='Plot' name='Plot' class=>{movie.Plot}</textarea>
 
                         <label for='Runtime'>Runtime</label>
-                        <input type='text' name='Runtime' value='{movie.Runtime}'/>
+                        <input type='text' title='Runtime' id='Runtime' name='Runtime' value='{movie.Runtime}'/>
 
                         <label for='Genre'>Genre</label>
-                        <input type='text' name='Genre' value='{movie.Genre}'/>
+                        <input type='text' title='Genre' id='Genre' name='Genre' value='{movie.Genre}'/>
 
                         <label for='Director'>Director</label>
-                        <input type='text' name='Director' value='{movie.Director}'/>
+                        <input type='text' title='Director' id='Director' name='Director' value='{movie.Director}'/>
 
                         <label for='Writer'>{(movie.Writer.Contains(',') ? "Writers" : "Writer")}</label>
-                        <input type='text' name='Writer' value='{movie.Writer}'/>
+                        <input type='text' title='Writer' id='Writer' name='Writer' value='{movie.Writer}'/>
 
                         <label for='Actors'>Actors</label>
-                        <input type='text' name='Actors' value='{movie.Actors}'/>
+                        <input type='text' title='Actors' id='Actors' name='Actors' value='{movie.Actors}'/>
 
                         <label for='Poster'>Poster</label>
-                        <input class='break-all' type='text' name='Poster' value='{movie.Poster}'/>
+                        <input class='break-all' type='text' title='Poster' id='Poster' name='Poster' value='{movie.Poster}'/>
 
                         <label for='Metascore'>Metascore</label>
-                        <input type='text' name='Metascore' value='{movie.Metascore}'/>
+                        <input type='text' title='Metascore' id='Metascore' name='Metascore' value='{movie.Metascore}'/>
 
                         <label for='Rating'>Rating</label>
-                        <input type='text' name='IMDbRating' value='{movie.IMDbRating}'/>
+                        <input type='text' title='IMDbRating' id='IMDbRating' name='IMDbRating' value='{movie.IMDbRating}'/>
 
-                        <input type='hidden' value='{movie.IMDbVotes}' name='IMDbVotes'/>
+                        <input type='hidden' value='{movie.IMDbVotes}' title='IMDbVotes' id='IMDbVotes' name='IMDbVotes'/>
 
                         <label for='IMDbId'>IMDbId</label>
-                        <input type='text' name='IMDbId' value='{movie.IMDbId}'/>
+                        <input type='text' title='IMDbId' id='IMDbId' name='IMDbId' value='{movie.IMDbId}'/>
                     </div>
 
                     <div class='sticky bottom-0 pb-8 gap-3 flex flex-row justify-end items-center'>
-                        <a hx-target='#current' hx-get='http://localhost:5275/api/movies/findMovieForm' class='button'>Go back</a>
+                        <a hx-target='#main-component' hx-get='http://localhost:5275/api/movies/findMovieForm' class='button'>Go back</a>
                         <button type='submit' class='button'>{(res != null ? "Save changes" : "Add movie")}</button>
                     </div>
                 </form>

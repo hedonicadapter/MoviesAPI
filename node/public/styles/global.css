@@ -16,6 +16,15 @@ form,
 section {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+}
+
+form {
+  overscroll-behavior-x: contain;
+}
+
+form div:first-child {
+  margin-top: 2rem;
 }
 
 img {
@@ -61,6 +70,14 @@ textarea {
 }
 
 @media (min-width: 768px) {
+  form,
+  section {
+    height: 100vh;
+  }
+
+  form div:first-child {
+    margin-top: 6rem;
+  }
 }
 @media (min-width: 1024px) {
 }

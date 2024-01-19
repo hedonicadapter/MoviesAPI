@@ -34,7 +34,7 @@
       <a
         hx-get="/"
         hx-push-url="true"
-        hx-target="#main"
+        hx-target="#main-component"
         class="block py-2 px-4 hover:"
       >
         Home
@@ -42,7 +42,7 @@
       <a
         hx-get="/edit"
         hx-push-url="true"
-        hx-target="#main"
+        hx-target="#main-component"
         class="block py-2 px-4 hover:"
       >
         Edit
@@ -52,27 +52,28 @@
       class="mt-32 md:mt-0 md:max-h-screen pb-16 px-[1.25vw] sm:px-[20vw] md:px-[14vw]"
       id="main"
     >
-      <section>
-        <header></header>
-        <div
-          hx-get="http://localhost:5275/api/movies/random"
-          hx-trigger="load"
-          hx-target="#movie-component"
-          hx-swap="innerHTML"
-          id="movie-component"
-        ></div>
-
-        <div>
-          <button
+      <div id="main-component">
+        <section>
+          <header></header>
+          <div
             hx-get="http://localhost:5275/api/movies/random"
-            hx-trigger="click"
-            hx-target="#movie-component"
+            hx-trigger="load"
+            hx-target="#main-component"
             hx-swap="innerHTML"
-          >
-            Next
-          </button>
-        </div>
-      </section>
+          ></div>
+
+          <div>
+            <button
+              hx-get="http://localhost:5275/api/movies/random"
+              hx-trigger="click"
+              hx-target="#main-component"
+              hx-swap="innerHTML"
+            >
+              Next
+            </button>
+          </div>
+        </section>
+      </div>
     </main>
     <footer></footer>
   </body>

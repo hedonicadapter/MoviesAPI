@@ -1,0 +1,8 @@
+form(hx-get='http://localhost:3000/api/movies/findMovie', hx-trigger='submit', hx-target='#main-component', hx-swap='innerHTML')
+  div.flex.flex-col.gap-7
+    input#Id(type='hidden', title='Id', name='Id')
+    label(for='Title') Title
+    input#Title(type='text', title='Title', name='Title')
+    label(for='Year') Year
+    input#Year(type='text', title='Year', name='Year')
+    button.button(type='submit') Search

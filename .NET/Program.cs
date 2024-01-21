@@ -45,7 +45,7 @@ app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title,
 
     try
     {
-        var res = await dbContext.Movies.Where(m => m.Title == title && m.Year == year).FirstOrDefaultAsync();
+        var res = year != null ? await dbContext.Movies.Where(m => m.Title.ToLower() == title.ToLower() && m.Year == year).FirstOrDefaultAsync() : await dbContext.Movies.Where(m => m.Title.ToLower() == title.ToLower()).FirstOrDefaultAsync();
 
         if (res != null)
         {
@@ -127,6 +127,7 @@ app.MapDelete("/api/movies/{id}", async (MovieContext dbContext, string id) =>
 {
     try
     {
+        Console.WriteLine(id);
         var movie = await dbContext.Movies.Where(m => m.Id.ToString() == id).FirstOrDefaultAsync();
         if (movie == null) return Results.NotFound();
 

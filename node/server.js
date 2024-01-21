@@ -62,13 +62,11 @@ app.put('/api/movies', async (req, res) => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: formData,
+      body: new URLSearchParams(formData),
     });
-    const movieJson = await response.json();
-    console.log(movieJson);
 
-    if (!movieJson) {
-      return res.render('error');
+    if (!response.ok) {
+      return res.render('error', { error: response.status });
     }
 
     res.render('movie', formData);
@@ -99,6 +97,7 @@ app.get('/api/movies/:id', async (req, res) => {
 });
 
 app.delete('/api/movies/:id', async (req, res) => {
+  console.log(req.params);
   const id = req.params.id;
 
   try {

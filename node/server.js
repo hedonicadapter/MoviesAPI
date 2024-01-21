@@ -12,11 +12,17 @@ app.use(express.json());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.render('index', { currentRoute: req.path });
 });
 
 app.get('/edit', (req, res) => {
-  res.sendFile(__dirname + '/pages/edit.html');
+  const fromHtmx = req.headers['hx-request'];
+
+  if (fromHtmx) {
+    res.render('find-movie-form');
+  } else {
+    res.render('index', { currentRoute: req.path });
+  }
 });
 
 app.get('/api/movies/random', async (req, res) => {

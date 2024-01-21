@@ -1,6 +1,4 @@
-document.querySelector('form').addEventListener('submit', function (event) {
-  event.preventDefault();
-
+function sanitizeAll() {
   document.querySelectorAll('input').forEach(function (input) {
     if (
       input.type === 'text' ||
@@ -16,9 +14,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
       input.value = sanitize(input.value);
     }
   });
-
-  event.target.submit();
-});
+}
 
 function sanitize(input) {
   var output = input

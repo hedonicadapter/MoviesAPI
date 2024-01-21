@@ -1,4 +1,4 @@
-form(hx-get='http://localhost:3000/api/movies/findMovie', hx-trigger='submit', hx-target='#main-component', hx-swap='innerHTML')
+form(hx-get='http://localhost:3000/api/movies/findMovie', hx-trigger='submit', hx-target='#main-component', hx-swap='innerHTML', hx-on::before-request='sanitizeAll()')
   div.flex.flex-col.gap-7
     input#Id(type='hidden', title='Id', name='Id')
     label(for='Title') Title

@@ -42,10 +42,10 @@ app.UseAuthorization();
 app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title, string? year) =>
 {
     var movie = new Movie();
-
+    Console.WriteLine(title + " " + year);
     try
     {
-        var res = year != null ? await dbContext.Movies.Where(m => m.Title.ToLower() == title.ToLower() && m.Year == year).FirstOrDefaultAsync() : await dbContext.Movies.Where(m => m.Title.ToLower() == title.ToLower()).FirstOrDefaultAsync();
+        var res = string.IsNullOrEmpty(year) ? await dbContext.Movies.Where(m => m.Title.ToLower() == title.ToLower()).FirstOrDefaultAsync() : await dbContext.Movies.Where(m => m.Title.ToLower() == title.ToLower() && m.Year == year).FirstOrDefaultAsync();
 
         if (res != null)
         {

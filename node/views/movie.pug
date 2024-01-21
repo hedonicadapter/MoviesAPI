@@ -1,9 +1,9 @@
 div(class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center')
   div(class='md:pb-3')
-    div(class='flex flex-row justify-between gap-3 items-baseline p-3')
+    img(class='rounded-md max-h-[50vh]', src=poster||Poster)
+    div(class='flex flex-row justify-between gap-3 items-baseline p-1 mt-5')
       h1 #{title || Title}
       p #{year || Year}
-    img(class='rounded-md outline outline-1 md:min-w-[100%]', src=poster||Poster)
     p(class='pt-3 pb-7') #{plot || Plot}
   div(class='md:h-[calc(100vh-6rem)] md:pr-[14vw] md:overflow-y-auto md:py-12 md:mt-24 md:w-full')
     #current.flex.flex-col.gap-3.relative
@@ -26,7 +26,7 @@ div(class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center
           else
             label Writer
           p #{writer || Writer}
-      div(class='sticky bottom-0 pb-8 gap-3 flex flex-row justify-end items-center')
+      div(class='sticky bottom-0 pb-8 gap-3 flex flex-row justify-end md:justify-start items-center')
         a.button(hx-target='#main-component', hx-get=`http://localhost:3000/api/movies/${Id || id}`) Edit
         a.button(hx-target='#main-component', hx-delete=`http://localhost:3000/api/movies/${Id || id}`) Delete
         

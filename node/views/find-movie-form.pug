@@ -2,7 +2,7 @@ form(hx-get='http://localhost:3000/api/movies/findMovie', hx-trigger='submit', h
   div.flex.flex-col.gap-7
     input#Id(type='hidden', title='Id', name='Id')
     label(for='Title') Title
-    input#Title(type='text', title='Title', name='Title')
+    input#Title(type='text', title='Title', name='Title', required)
     label(for='Year') Year
-    input#Year(type='text', title='Year', name='Year')
+    input#Year(type='number', title='Year', name='Year', required)
     button.button(type='submit') Search

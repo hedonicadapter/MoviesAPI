@@ -4,28 +4,28 @@ div(class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center
   form(class='md:h-[calc(100vh-6rem)] md:pr-[14vw] md:overflow-y-auto md:py-12 md:mt-24 md:w-full', hx-swap='innerHTML', hx-target='#main-component', hx-put='http://localhost:3000/api/movies')
     div(class='flex flex-col gap-7 child:flex child:flex-col child:gap-2')
       label(for='Title') Title
-      input#Title(type='text', title='Title', name='Title', value=title)
+      input#Title(type='text', title='Title', name='Title', value=title, required)
       label(for='Year') Year
-      input#Year(type='text', title='Year', name='Year', value=year)
+      input#Year(type='text', title='Year', name='Year', value=year, required)
       label(for='Rated') Rated
-      input#Rated(type='text', title='Rated', name='Rated', value=rated)
+      input#Rated(type='text', title='Rated', name='Rated', value=rated, required)
       label(for='Plot') Plot
       textarea#Plot(title='Plot', name='Plot') #{plot}
       label(for='Runtime') Runtime
       input#Runtime(type='text', title='Runtime', name='Runtime', value=runtime)
       label(for='Genre') Genre
-      input#Genre(type='text', title='Genre', name='Genre', value=genre)
+      input#Genre(type='text', title='Genre', name='Genre', value=genre, required)
       label(for='Director') Director
-      input#Director(type='text', title='Director', name='Director', value=director)
+      input#Director(type='text', title='Director', name='Director', value=director, required)
       if writer && writer.includes(",")
         label(for='Writer') Writers
       else
         label(for='Writer') Writer
-      input#Writer(type='text', title='Writer', name='Writer', value=writer)
+      input#Writer(type='text', title='Writer', name='Writer', value=writer, required)
       label(for='Actors') Actors
       input#Actors(type='text', title='Actors', name='Actors', value=actors)
       label(for='Poster') Poster
-      input#Poster.break-all(type='text', title='Poster', name='Poster', value=poster)
+      input#Poster.break-all(type='text', title='Poster', name='Poster', value=poster, required)
       label(for='Metascore') Metascore
       input#Metascore(type='text', title='Metascore', name='Metascore', value=metascore)
       label(for='Rating') Rating
@@ -35,7 +35,8 @@ div(class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center
       input#IMDbId(type='text', title='IMDbId', name='IMDbId', value=iMDbId)
     div(class='sticky bottom-0 pb-8 gap-3 flex flex-row justify-end items-center')
       a.button(hx-target='#main-component', hx-get='http://localhost:3000/api/movies/findMovieForm') Go back
-      if res != null
+      if id != null
+        a.button(hx-target='#main-component', hx-delete=`http://localhost:3000/api/${Id}`) Delete
         button.button(type='submit') Save changes
       else
         button.button(type='submit') Add movie

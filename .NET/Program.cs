@@ -9,8 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
@@ -73,11 +71,10 @@ app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title,
     }
 });
 
-app.MapPut("/api/movies", async (HttpContext httpContext) =>
+app.MapPut("/api/movies", async (HttpContext httpContext, MovieContext dbContext) =>
 {
     try
     {
-        var dbContext = httpContext.RequestServices.GetRequiredService<MovieContext>();
         var formData = await httpContext.Request.ReadFormAsync();
         var newMovie = new Movie();
 

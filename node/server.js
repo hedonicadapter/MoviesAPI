@@ -59,15 +59,37 @@ app.put('/api/movies', async (req, res) => {
 
     const response = await fetch('http://localhost:5275/api/movies', {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body: formData,
     });
     const movieJson = await response.json();
+    console.log(movieJson);
 
     if (!movieJson) {
       return res.render('error');
     }
 
     res.render('movie', formData);
+  } catch (ex) {
+    res.render('error', { error: ex });
+  }
+});
+
+app.delete('/api/movies/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const response = await fetch(`http://localhost:5275/api/movies/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      return res.render('error', { error: response.status });
+    }
+
+    res.redirect('/');
   } catch (ex) {
     res.render('error', { error: ex });
   }

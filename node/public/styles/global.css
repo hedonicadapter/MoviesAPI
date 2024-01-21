@@ -61,12 +61,21 @@ label {
 }
 
 input[type='text'],
+input[type='number'],
 textarea {
   border: 1px solid #ccc;
   border-radius: 0.375rem;
 
   padding: 0.5rem !important;
   width: calc(100% - 1rem);
+}
+
+:valid {
+  border-color: #48bb78;
+}
+
+:invalid {
+  border-color: #f56565;
 }
 
 @media (min-width: 768px) {

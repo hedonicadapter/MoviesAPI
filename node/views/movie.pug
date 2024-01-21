@@ -22,7 +22,11 @@ div(class='flex flex-col md:flex-row md:gap-10 md:justify-center md:items-center
           p #{director || Director}
         div
           if writer && writer.includes(",")
-            p Writers
+            label Writers
           else
-            p Writer
+            label Writer
           p #{writer || Writer}
+      div(class='sticky bottom-0 pb-8 gap-3 flex flex-row justify-end items-center')
+        a.button(hx-target='#main-component', hx-get=`http://localhost:3000/api/movies/${Id || id}`) Edit
+        a.button(hx-target='#main-component', hx-delete=`http://localhost:3000/api/movies/${Id || id}`) Delete
+        

@@ -62,15 +62,37 @@ app.put('/api/movies', async (req, res) => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams(formData),
+      body: formData,
     });
     const movieJson = await response.json();
+    console.log(movieJson);
 
     if (!movieJson) {
       return res.render('error');
     }
 
     res.render('movie', formData);
+  } catch (ex) {
+    res.render('error', { error: ex });
+  }
+});
+
+app.get('/api/movies/findMovieForm', (req, res) => {
+  res.render('find-movie-form');
+});
+
+app.get('/api/movies/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const movie = await fetch(`http://localhost:5275/api/movies/${id}`);
+    const movieJson = await movie.json();
+
+    if (!movieJson) {
+      res.render('error');
+    }
+
+    res.render('found-movie-form', movieJson);
   } catch (ex) {
     res.render('error', { error: ex });
   }
@@ -92,10 +114,6 @@ app.delete('/api/movies/:id', async (req, res) => {
   } catch (ex) {
     res.render('error', { error: ex });
   }
-});
-
-app.get('/api/movies/findMovieForm', (req, res) => {
-  res.render('find-movie-form');
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

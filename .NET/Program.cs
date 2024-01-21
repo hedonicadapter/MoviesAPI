@@ -39,7 +39,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-
 app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title, string? year) =>
 {
     var movie = new Movie();

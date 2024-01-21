@@ -9,6 +9,7 @@
       integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/restored.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="/static/styles/global.css" rel="stylesheet" />
     <script>
@@ -27,7 +28,7 @@
     </script>
     <title>My Webpage</title>
   </head>
-  <body>
+  <body hx-boost="true">
     <nav
       class="p-8 z-50 select-none flex flex-row items-center w-screen fixed top-0 bg-white shadow-sm"
     >

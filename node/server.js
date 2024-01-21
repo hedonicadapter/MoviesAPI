@@ -62,10 +62,9 @@ app.put('/api/movies', async (req, res) => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: formData,
+      body: new URLSearchParams(formData),
     });
     const movieJson = await response.json();
-    console.log(movieJson);
 
     if (!movieJson) {
       return res.render('error');

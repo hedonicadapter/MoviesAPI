@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: Movie API
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Render the index page
+      responses:
+        '200':
+          description: The index page
+  /edit:
+    get:
+      summary: Render the edit page or the index page based on the request header
+      responses:
+        '200':
+          description: The edit page or the index page
+  /api/movies/random:
+    get:
+      summary: Get a random movie
+      responses:
+        '200':
+          description: A random movie
+  /api/movies/findMovie:
+    get:
+      summary: Find a movie by title and year
+      parameters:
+        - in: query
+          name: Title
+          schema:
+            type: string
+          required: true
+          description: The title of the movie
+        - in: query
+          name: Year
+          schema:
+            type: string
+          required: false
+          description: The year of the movie
+      responses:
+        '200':
+          description: The found movie
+  /api/movies:
+    put:
+      summary: Update a movie
+      responses:
+        '200':
+          description: The updated movie
+  /api/movies/findMovieForm:
+    get:
+      summary: Render the find movie form
+      responses:
+        '200':
+          description: The find movie form
+  /api/movies/{id}:
+    get:
+      summary: Get a movie by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the movie
+      responses:
+        '200':
+          description: The found movie
+    delete:
+      summary: Delete a movie by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the movie
+      responses:
+        '200':
+          description: The movie was deleted

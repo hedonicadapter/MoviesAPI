@@ -100,6 +100,10 @@ textarea {
 }
 
 @media (min-width: 768px) {
+  main {
+    padding-right: 0 !important;
+  }
+
   form,
   section {
     height: 100vh;

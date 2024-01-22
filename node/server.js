@@ -3,6 +3,7 @@ const path = require('path');
 
 const port = 3000;
 const app = express();
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -10,6 +11,39 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
+
+app.get('/api-docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'openapi-spec.yaml'));
+});
+
+app.get('/redoc', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>ReDoc</title>
+        <!-- needed for adaptive design -->
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+        <!--
+        ReDoc doesn't change outer page styles
+        -->
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+          }
+        </style>
+      </head>
+      <body>
+        <redoc spec-url='/api-docs'></redoc>
+        <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+      </body>
+    </html>
+  `);
+});
 
 app.get('/', (req, res) => {
   res.render('index', { currentRoute: req.path });
@@ -103,7 +137,6 @@ app.get('/api/movies/:id', async (req, res) => {
 });
 
 app.delete('/api/movies/:id', async (req, res) => {
-  console.log(req.params);
   const id = req.params.id;
 
   try {

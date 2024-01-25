@@ -23,9 +23,12 @@ html(lang="en")
       };
     title My Webpage
   body(hx-boost="true")
-    nav(class="p-8 z-50 select-none flex flex-row items-center w-screen fixed top-0 bg-white shadow-sm")
-      a(hx-get="/", hx-push-url="true", hx-target="#main-component", class="block py-2 px-4 hover:") Movies
-      a(hx-get="/edit", hx-push-url="true", hx-target="#main-component", class="block py-2 px-4 hover:") Edit
+    nav(class="p-8 z-50 select-none flex flex-row items-center w-screen fixed top-0 bg-white shadow-sm justify-between")
+      div(class="flex flex-row items-center gap-4")
+        a(hx-get="/", hx-push-url="true", hx-target="#main-component", class="block py-2 px-4 hover:") Movies
+        a(hx-get="/edit", hx-push-url="true", hx-target="#main-component", class="block py-2 px-4 hover:") Edit
+      div
+        a(href="/redoc" class="block py-2 px-4 hover:") API Reference
     main(class="mt-32 md:mt-0 md:max-h-screen pb-16 px-[1.25vw] sm:px-[20vw] md:px-[14vw]", id="main")
       div(id="main-component")
         section

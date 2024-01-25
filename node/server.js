@@ -138,7 +138,8 @@ app.delete('/api/movies/:id', async (req, res) => {
     const response = await fetch(`http://localhost:5275/api/movies/${id}`, {
       method: 'DELETE',
     });
-    if (!response.ok) throw new Error(response.status);
+    if (response.status === 404) throw new HttpError('Movie not found', 404);
+    else if (!response.ok) throw new Error(response.status);
 
     res.redirect('/');
   } catch (ex) {

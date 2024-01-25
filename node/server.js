@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const HttpError = require('./util');
 
 const port = 3000;
 const app = express();
@@ -61,16 +62,15 @@ app.get('/edit', (req, res) => {
 
 app.get('/api/movies/random', async (req, res) => {
   try {
-    const movie = await fetch('http://localhost:5275/api/movies/random');
-    const movieJson = await movie.json();
+    const response = await fetch('http://localhost:5275/api/movies/random');
+    if (!response.ok) throw new Error(response.status);
 
-    if (!movieJson) {
-      res.render('error');
-    }
+    const movieJson = await response.json();
+    if (!movieJson) throw new HttpError('Movie not found', 404);
 
     res.render('movie', movieJson);
   } catch (ex) {
-    res.render('error', { error: ex });
+    res.status(ex.status || 500).render('error', { error: ex });
   }
 });
 
@@ -78,18 +78,17 @@ app.get('/api/movies/findMovie', async (req, res) => {
   try {
     const { Title, Year } = req.query;
 
-    const movie = await fetch(
+    const response = await fetch(
       `http://localhost:5275/api/movies/findMovie?title=${Title}&year=${Year}`
     );
-    const movieJson = await movie.json();
+    if (!response.ok) throw new Error(response.status);
 
-    if (!movieJson) {
-      res.render('error');
-    }
+    const movieJson = await response.json();
+    if (!movieJson) throw new HttpError('Movie not found', 404);
 
     res.render('found-movie-form', movieJson);
   } catch (ex) {
-    res.render('error', { error: ex });
+    res.status(ex.status || 500).render('error', { error: ex });
   }
 });
 
@@ -104,14 +103,11 @@ app.put('/api/movies', async (req, res) => {
       },
       body: new URLSearchParams(formData),
     });
-
-    if (!response.ok) {
-      return res.render('error', { error: response.status });
-    }
+    if (!response.ok) throw new Error(response.status);
 
     res.render('movie', formData);
   } catch (ex) {
-    res.render('error', { error: ex });
+    res.status(ex.status || 500).render('error', { error: ex });
   }
 });
 
@@ -123,16 +119,15 @@ app.get('/api/movies/:id', async (req, res) => {
   try {
     const id = req.params.id;
 
-    const movie = await fetch(`http://localhost:5275/api/movies/${id}`);
-    const movieJson = await movie.json();
+    const response = await fetch(`http://localhost:5275/api/movies/${id}`);
+    if (!response.ok) throw new Error(response.status);
 
-    if (!movieJson) {
-      res.render('error');
-    }
+    const movieJson = await response.json();
+    if (!movieJson) throw new HttpError('Movie not found', 404);
 
     res.render('found-movie-form', movieJson);
   } catch (ex) {
-    res.render('error', { error: ex });
+    res.status(ex.status || 500).render('error', { error: ex });
   }
 });
 
@@ -143,14 +138,11 @@ app.delete('/api/movies/:id', async (req, res) => {
     const response = await fetch(`http://localhost:5275/api/movies/${id}`, {
       method: 'DELETE',
     });
-
-    if (!response.ok) {
-      return res.render('error', { error: response.status });
-    }
+    if (!response.ok) throw new Error(response.status);
 
     res.redirect('/');
   } catch (ex) {
-    res.render('error', { error: ex });
+    res.status(ex.status || 500).render('error', { error: ex });
   }
 });
 

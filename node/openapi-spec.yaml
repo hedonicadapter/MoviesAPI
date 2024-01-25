@@ -9,21 +9,39 @@ paths:
       responses:
         '200':
           description: The index page
+          content:
+            text/html:
+              schema:
+                type: string
   /edit:
     get:
-      summary: Render the edit page or the index page based on the request header
+      summary: Render the edit page based on the request header
+      parameters:
+        - in: header
+          name: hx-request
+          schema:
+            type: string
+          description: Determines if request was the result of browser navigation or a htmx fetch. If it's browser navigation a full page rerender is required.
       responses:
         '200':
-          description: The edit page or the index page
+          description: The edit page
+          content:
+            text/html:
+              schema:
+                type: string
   /api/movies/random:
     get:
       summary: Get a random movie
       responses:
         '200':
-          description: A random movie
+          description: A component with a random movie
+          content:
+            text/html:
+              schema:
+                type: string
   /api/movies/findMovie:
     get:
-      summary: Find a movie by title and year
+      summary: Find a movie by title and/or year
       parameters:
         - in: query
           name: Title
@@ -35,23 +53,94 @@ paths:
           name: Year
           schema:
             type: string
-          required: false
           description: The year of the movie
       responses:
         '200':
-          description: The found movie
+          description: A form with pre-filled information about the found movie
+          content:
+            text/html:
+              schema:
+                type: string
   /api/movies:
     put:
-      summary: Update a movie
+      summary: Upsert a movie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                title:
+                  type: string
+                year:
+                  type: string
+                rated:
+                  type: string
+                runtime:
+                  type: string
+                  nullable: true
+                genre:
+                  type: string
+                director:
+                  type: string
+                writer:
+                  type: string
+                actors:
+                  type: string
+                  nullable: true
+                plot:
+                  type: string
+                  nullable: true
+                language:
+                  type: string
+                  nullable: true
+                country:
+                  type: string
+                  nullable: true
+                poster:
+                  type: string
+                metascore:
+                  type: string
+                  nullable: true
+                imdbRating:
+                  type: string
+                  nullable: true
+                imdbVotes:
+                  type: string
+                  nullable: true
+                imdbId:
+                  type: string
+                  nullable: true
+              required:
+                - title
+                - year
+                - rated
+                - genre
+                - director
+                - writer
+                - poster
       responses:
         '200':
-          description: The updated movie
+          description: The updated movie inside a html component
+          content:
+            text/html:
+              schema:
+                type: string
   /api/movies/findMovieForm:
     get:
-      summary: Render the find movie form
+      summary: Render a form used to find movies
       responses:
         '200':
           description: The find movie form
+          content:
+            text/html:
+              schema:
+                type: string
   /api/movies/{id}:
     get:
       summary: Get a movie by ID
@@ -64,7 +153,11 @@ paths:
           description: The ID of the movie
       responses:
         '200':
-          description: The found movie
+          description: The found movie in a form
+          content:
+            text/html:
+              schema:
+                type: string
     delete:
       summary: Delete a movie by ID
       parameters:
@@ -75,5 +168,10 @@ paths:
           required: true
           description: The ID of the movie
       responses:
-        '200':
-          description: The movie was deleted
+        '302':
+          description: The movie was deleted and the client should redirect
+          headers:
+            Location:
+              description: /
+              schema:
+                type: string

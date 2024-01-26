@@ -43,7 +43,7 @@ jobs:
 
     - name: npm install, build, and test
       run: |
-        npm ci
+        npm install
         npm run build --if-present
         npm run test --if-present
       working-directory: ./node
@@ -53,7 +53,7 @@ jobs:
       with:
         name: node-app
         path: ./node
-
+        
   deploy:
     permissions:
       contents: none

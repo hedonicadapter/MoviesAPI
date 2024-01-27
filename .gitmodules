@@ -1,0 +1,3 @@
+[submodule "MoviesAPI-Node"]
+	path = MoviesAPI-Node
+	url = https://github.com/hedonicadapter/MoviesAPI-Node.git

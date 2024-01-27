@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
+        builder.WithOrigins("https://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -54,7 +54,7 @@ app.MapGet("/api/movies/findMovie", async (MovieContext dbContext, string title,
             string queryParams = $"t={title}";
             if (year != null) queryParams += $"&y={year}";
 
-            var response = await client.GetAsync($"http://www.omdbapi.com/?{queryParams}&apikey={Environment.GetEnvironmentVariable("OMDB_API_KEY")}");
+            var response = await client.GetAsync($"https://www.omdbapi.com/?{queryParams}&apikey={Environment.GetEnvironmentVariable("OMDB_API_KEY")}");
             movie = await response.Content.ReadFromJsonAsync<Movie>();
             if (movie == null) return Results.BadRequest();
         }
